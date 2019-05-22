@@ -1,0 +1,171 @@
+.usernameBox {
+  display: flex;
+  background: #060ce9;
+  height: 100px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  position: absolute;
+  top: calc(50vh - 100px);
+  left: calc(50vw - 185px);
+  transition: all 1s;
+  width: 0px;
+  overflow: hidden;
+  padding: 0px;
+}
+
+.fullInnerWrapper {
+  width: 800px;
+  height: 800px;
+  border: solid 20px #060ce9;
+  border-radius: 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullWrapper {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.topMenu {
+  padding: 15px;
+  border-bottom: 5px solid #060ce9;
+  display: flex;
+}
+
+.topMenu span {
+  color: #060ce9;
+  font-size: 20px;
+  font-weight: bold;
+  flex-grow: 100;
+}
+
+.topMenu .editButton {
+  background: white;
+  border: none;
+  font-size: 30px;
+  line-height: 0px;
+  transform: rotate(135deg);
+  color: #060ce9;
+  padding: 0px 0px 5px 5px;
+  transition: all 1s;
+  border-radius: 100px;
+}
+
+.topMenu .editButton:hover {
+  color: black;
+  cursor: pointer;
+}
+
+.topMenu .logOutButton {
+  border: solid 3px #060ce9;
+  background: transparent;
+  color: #060ce9;
+  border-radius: 5px;
+  transition: all 1s;
+}
+
+.topMenu .logOutButton:hover {
+  background: #060ce9;
+  color: white;
+  cursor: pointer;
+}
+
+#searchCreateInput {
+  flex-grow: 100;
+  border: solid #060ce9 3px;
+  border-top: none;
+  padding: 10px;
+  font-size: 17px;
+}
+
+.roomListMenu {
+  display: flex;
+  height: 50px;
+}
+
+.roomListMenu button {
+  background: transparent;
+  border: none;
+  border-bottom: solid #060ce9 3px;
+  font-size: 17px;
+  color: #060ce9;
+  cursor: pointer;
+}
+
+.roomList {
+  flex-grow: 100;
+  margin: 0;
+  padding: 0;
+  overflow-y: scroll;
+}
+
+.roomList>li {
+  list-style: none;
+}
+
+.roomList>li>a {
+  display: flex;
+  font-size: 15px;
+  padding: 0px 15px;
+  text-decoration: none;
+}
+
+.roomList>li>a:not(:last-child) {
+  border-bottom: 3px solid #060ce9;
+}
+
+.roomList>li>a h1 {
+  font-size: 20px;
+  color: #060ce9;
+}
+
+.roomList>li>a .roomListName {
+  flex-grow: 100;
+}
+
+.boardWrapper {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+  height: 80%;
+}
+
+.boardColumn {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-rows: 17%;
+}
+
+.boardColumn li {
+  list-style: none;
+  margin: 5px;
+  background: #060ce9;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 10px;
+  font-weight: bolder;
+  padding: 10px;
+}
+
+.boardColumnScreen {
+  font-size: 30px;
+}
+
+.playerBarWrapper {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  flex-grow: 100;
+}
+
+.playerBarWrapper h1, .playerBarWrapper h2 {
+  margin: 0;
+  height: 50%;
+}
