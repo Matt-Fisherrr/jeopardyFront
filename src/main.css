@@ -134,6 +134,37 @@
   height: 80%;
 }
 
+.readyWrapper{
+  position: absolute;
+  background: #060ce9;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: calc(50vh - 100px);
+  left: calc(50vw - 100px);
+  border-radius: 10px;
+  border: solid white 3px;
+}
+
+.readyWrapper button {
+  background: transparent;
+  color: white;
+  font-size: 20px;
+  width: 100px;
+  height: 100px;
+  font-weight: bold;
+  border: solid white 3px;
+  border-radius: 5px;
+  transition: all 1s;
+  cursor: pointer;
+}
+
+.readyWrapper button:hover {
+  border-color: yellow;
+}
+
 .boardColumn {
   padding: 0;
   margin: 0;

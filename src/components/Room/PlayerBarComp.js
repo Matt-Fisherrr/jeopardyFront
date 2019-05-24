@@ -1,12 +1,12 @@
 import React from 'react';
 
-export const PlayerBar = ({players, selectPlayer, activatePlayer}) => {
+export const PlayerBar = ({players, selectPlayer, activePlayer}) => {
   
   return(
     <div className="playerBarWrapper">
       <div 
         className="playerOne"
-        style={(activatePlayer === 1)?{background:'#ccc'}:{}}
+        style={(activePlayer === 1 || players.playerOneReady === true)?{background:'#ccc'}:{}}
         onClick={() => selectPlayer("one")}
       >
         <h1>{players.playerOne}</h1>
@@ -14,16 +14,16 @@ export const PlayerBar = ({players, selectPlayer, activatePlayer}) => {
       </div>
       <div 
         className="playerTwo" 
-        style={(activatePlayer === 2)?{background:'#ccc'}:{}}
-        onClick={() => selectPlayer("Two")}
+        style={(activePlayer === 2 || players.playerTwoReady === true)?{background:'#ccc'}:{}}
+        onClick={() => selectPlayer("two")}
       >
         <h1>{players.playerTwo}</h1>
         <h2>Score: {players.playerTwoScore}</h2>
       </div>
       <div 
         className="playerThree" 
-        style={(activatePlayer === 3)?{background:'#ccc'}:{}}
-        onClick={() => selectPlayer("Three")}
+        style={(activePlayer === 3 || players.playerThreeReady === true)?{background:'#ccc'}:{}}
+        onClick={() => selectPlayer("three")}
       >
         <h1>{players.playerThree}</h1>
         <h2>Score: {players.playerThreeScore}</h2>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Redirect } from "react-router-dom";
 
 import openSocket from 'socket.io-client';
 
@@ -13,17 +14,26 @@ export default class RoomList extends Component {
       board: {},
       loading: 'Loading...',
       playerNum: 0,
-      activatePlayer: 0,
+      activePlayer: 0,
+      started:false,
+      ready:false,
+      player_id:0,
+      viewers:0,
     }
     this.players = {
       playerOne: "",
       playerOneScore: 0,
+      playerOneReady:false,
       playerTwo: "",
       playerTwoScore: 0,
+      playerTwoReady:false,
       playerThree: "",
       playerThreeScore: 0,
+      playerThreeReady:false,
     }
     this.socket = null
+
+    this.numbers = ['zero','one','two','three']
   }
 
   componentDidMount() {
@@ -54,7 +64,6 @@ export default class RoomList extends Component {
     this.socket = openSocket('http://localhost:5000/jep')
 
       this.socket.on('connect', () => {
-        console.log("connect")
         this.socket.emit('join_room', { room_id: this.state.room, access_token: this.props.auth.getAccessToken() })
       })
 
@@ -64,9 +73,9 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('has_joined_room', (msg) => {
-        console.log("joined_room",msg)
         const room = msg.room_list
         this.players = {
+          ...this.players,
           playerOne: room.players.one.username,
           playerOneScore: room.players.one.score,
           playerTwo: room.players.two.username,
@@ -75,30 +84,103 @@ export default class RoomList extends Component {
           playerThreeScore: room.players.three.score,
         }
         this.setState({
-          activatePlayer:1,
+          activePlayer:msg.room_list.active_player,
+          playerNum:(msg.position !== 0)?msg.position:this.state.playerNum,
+          started:msg.room_list.started,
+          player_id:msg.player_id,
+        })
+        this.socket.emit('viewer_joined')
+      })
+
+      this.socket.on('viewer_added', (msg) => {
+        console.log(`Viewers: ${msg.viewers}`)
+        this.setState({
+          viewers:msg.viewers,
         })
       })
 
       this.socket.on('player_selected', (msg) => {
         console.log("player_selected",msg)
-        if(msg.position === "one"){
+        if(msg.position.toLowerCase() === "one"){
           this.players = {
-            playerOne:msg.username[0],
+            ...this.players,
+            playerOne:msg.username,
           }
-        } else if (msg.position === "two"){
+        } else if (msg.position.toLowerCase() === "two"){
           this.players = {
-            playerTwo:msg.username[0],
+            ...this.players,
+            playerTwo:msg.username,
           }
-        } else if (msg.position === "three"){
+        } else if (msg.position.toLowerCase() === "three"){
           this.players = {
-            playerThree:msg.username[0],
+            ...this.players,
+            playerThree:msg.username,
           }
         }
-        this.setState({
-          activatePlayer:1,
-        })
+        if(msg.player_id === this.state.player_id){
+          this.setState({
+            playerNum:msg.playerNum
+          })
+        } else {
+          this.setState({})
+        }
       })
 
+      this.socket.on('ready_player', (msg) => {
+        switch(msg.position){
+          case('one'):
+            this.players = {
+              ...this.players,
+              playerOneReady:msg.ready,
+            }
+            break;
+          case('two'):
+            this.players = {
+              ...this.players,
+              playerTwoReady:msg.ready,
+            }
+            break;
+          case('three'):
+            this.players = {
+              ...this.players,
+              playerThreeReady:msg.ready,
+            }
+            break;
+          default:
+            break;
+        }
+        if(this.state.playerNum === msg.position) {
+          if(msg.started === true){
+            this.players = {
+              ...this.players,
+              playerOneReady:false,
+              playerTwoReady:false,
+              playerThreeReady:false,
+            }
+            this.setState({
+              started:msg.started,
+              activePlayer:1,
+            })
+          } else {
+          this.setState({
+              ready:msg.ready,
+              started:msg.started,
+            })
+          }
+        } else {
+          this.setState({
+            started:msg.started,
+          })
+        }
+      })
+
+
+      this.socket.on('error', () => {
+        this.setState({
+          loading:'Connection to server lost'
+        })
+      })
+    
       this.socket.on('test', (msg) => {
         console.log(msg)
       })
@@ -109,7 +191,6 @@ export default class RoomList extends Component {
   }
 
   createBoard = () => {
-    console.log(this.state.board)
     let board = []
     for (let key in this.state.board) {
       board.push(<ul className="boardColumn">
@@ -120,6 +201,7 @@ export default class RoomList extends Component {
             key={key.replace(/[^A-Za-z]/g, '') + v.value}
             className="boardColumnScreen"
             onClick={this.testemit}
+            style={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?{cursor:'pointer'}:{cursor:'none'}}
           >{v.value}</li>)}
       </ul>)
     }
@@ -130,22 +212,34 @@ export default class RoomList extends Component {
     this.socket.emit('player_select', {access_token: this.props.auth.getAccessToken(), position:pos})
   }
 
+  readyClick = () => {
+    this.socket.emit('player_ready', {access_token: this.props.auth.getAccessToken()})
+  }
+
+  readyBox = () => {
+    return(
+      <div className="readyWrapper">
+        <button onClick={this.readyClick} style={(this.state.ready)?{background:'white',color:'#060ce9'}:{background:'#060ce9',color:'white'}}>Ready</button>
+      </div>
+    );
+  }
+
   render() {
     if (this.state.loading !== '') {
       return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
           <h1>{this.state.loading}</h1>
         </div>
       );
     }
-
     if(this.state.loading === ''){
       return (
         <>
           <div className="boardWrapper">
+            {(this.state.started === false && this.state.playerNum !== 0)?this.readyBox():null}
             {this.createBoard()}
           </div>
-          <PlayerBar players={this.players} selectPlayer={this.selectPlayer} activatePlayer={this.state.activatePlayer}/>
+          <PlayerBar players={this.players} selectPlayer={this.selectPlayer} activePlayer={this.state.activePlayer}/>
         </>
       );
     }

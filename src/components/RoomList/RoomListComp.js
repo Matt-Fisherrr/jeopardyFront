@@ -135,7 +135,7 @@ export default class RoomList extends Component {
       );
     }
 
-    if (this.state.roomlist === undefined) {
+    if (this.state.roomlist === undefined && this.state.authorized === true) {
       this.getRoomList()
       return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh' }}>
