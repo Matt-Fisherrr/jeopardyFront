@@ -134,7 +134,7 @@
   height: 80%;
 }
 
-.readyWrapper{
+.readyWrapper {
   position: absolute;
   background: #060ce9;
   width: 200px;
@@ -169,7 +169,7 @@
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-rows: 17%;
+  grid-template-rows: 20% 16% 16% 16% 16% 16%;
 }
 
 .boardColumn li {
@@ -199,4 +199,36 @@
 .playerBarWrapper h1, .playerBarWrapper h2 {
   margin: 0;
   height: 50%;
+}
+
+.largeScreenWrapper {
+  position: absolute;
+  background: blue;
+  width: 740px;
+  height: 588px;
+  margin: 10px;
+  border-radius: 10px;
+}
+
+.largeScreenWrapper .largeScreenInnerWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 740px;
+  height: 588px;
+  padding: 20px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+}
+
+.largeScreenWrapper .largeScreenInnerWrapper span {
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+  margin: 30px 0px;
+}
+
+.largeScreenInnerWrapper input {
+  width: 400px;
 }

@@ -11,14 +11,16 @@ export default class RoomList extends Component {
     super(props)
     this.state = {
       room: this.props.room,
-      board: {},
       loading: 'Loading...',
       playerNum: 0,
       activePlayer: 0,
-      started:false,
+      started:0,
       ready:false,
       player_id:0,
       viewers:0,
+      screenText:'',
+      screenInput:'',
+      buzzable:false,
     }
     this.players = {
       playerOne: "",
@@ -31,6 +33,7 @@ export default class RoomList extends Component {
       playerThreeScore: 0,
       playerThreeReady:false,
     }
+    this.board = {}
     this.socket = null
 
     this.numbers = ['zero','one','two','three']
@@ -41,8 +44,8 @@ export default class RoomList extends Component {
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`, 'room_id': this.state.room }
     axios.get(`${this.props.API_URL}/roomlist/getboard`, { headers })
       .then(response => {
+        this.board = response.data.board
         this.setState({
-          board: response.data.board,
           loading: '',
         })
         this.socketSetup()
@@ -68,25 +71,26 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('ping_check', (msg) => {
-        console.log(msg)
         this.socket.emit('pong_res', { ping_num: msg.ping_num, access_token: this.props.auth.getAccessToken() })
       })
 
       this.socket.on('has_joined_room', (msg) => {
-        const room = msg.room_list
         this.players = {
           ...this.players,
-          playerOne: room.players.one.username,
-          playerOneScore: room.players.one.score,
-          playerTwo: room.players.two.username,
-          playerTwoScore: room.players.two.score,
-          playerThree: room.players.three.username,
-          playerThreeScore: room.players.three.score,
+          playerOne: msg.players.one.username,
+          playerOneScore: msg.players.one.score,
+          playerOneReady:msg.players.two.ready,
+          playerTwo: msg.players.two.username,
+          playerTwoScore: msg.players.two.score,
+          playerTwoReady:msg.players.two.ready,
+          playerThree: msg.players.three.username,
+          playerThreeScore: msg.players.three.score,
+          playerThreeReady:msg.players.three.ready,
         }
         this.setState({
-          activePlayer:msg.room_list.active_player,
+          activePlayer:msg.active_player,
           playerNum:(msg.position !== 0)?msg.position:this.state.playerNum,
-          started:msg.room_list.started,
+          started:msg.started,
           player_id:msg.player_id,
         })
         this.socket.emit('viewer_joined')
@@ -100,7 +104,6 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('player_selected', (msg) => {
-        console.log("player_selected",msg)
         if(msg.position.toLowerCase() === "one"){
           this.players = {
             ...this.players,
@@ -119,7 +122,7 @@ export default class RoomList extends Component {
         }
         if(msg.player_id === this.state.player_id){
           this.setState({
-            playerNum:msg.playerNum
+            playerNum:msg.position
           })
         } else {
           this.setState({})
@@ -127,49 +130,107 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('ready_player', (msg) => {
-        switch(msg.position){
-          case('one'):
-            this.players = {
-              ...this.players,
-              playerOneReady:msg.ready,
-            }
-            break;
-          case('two'):
-            this.players = {
-              ...this.players,
-              playerTwoReady:msg.ready,
-            }
-            break;
-          case('three'):
-            this.players = {
-              ...this.players,
-              playerThreeReady:msg.ready,
-            }
-            break;
-          default:
-            break;
+        console.log(msg)
+        if(msg.position === 'one'){
+          this.players = {
+            ...this.players,
+            playerOneReady:msg.ready,
+          }
+        } else if (msg.position === 'two') {
+          this.players = {
+            ...this.players,
+            playerTwoReady:msg.ready,
+          }
+        } else if (msg.position === 'three') {
+          this.players = {
+            ...this.players,
+            playerThreeReady:msg.ready,
+          }
         }
         if(this.state.playerNum === msg.position) {
-          if(msg.started === true){
-            this.players = {
-              ...this.players,
-              playerOneReady:false,
-              playerTwoReady:false,
-              playerThreeReady:false,
-            }
-            this.setState({
-              started:msg.started,
-              activePlayer:1,
-            })
-          } else {
-          this.setState({
-              ready:msg.ready,
-              started:msg.started,
-            })
-          }
+        this.setState({
+            ready:msg.ready,
+            started:msg.started,
+          })
         } else {
           this.setState({
             started:msg.started,
+          })
+        }
+        if(msg.started === 1){
+          this.players = {
+            ...this.players,
+            playerOneReady:false,
+            playerTwoReady:false,
+            playerThreeReady:false,
+          }
+          this.setState({
+            started:msg.started,
+            activePlayer:1,
+          })
+        }
+      })
+
+      this.socket.on('screen_selected', (msg) => {
+        this.board[msg.category][msg.clue]['answered'] = true
+        this.setState({
+          screenText:msg.screen_text,
+          activePlayer:msg.active_player
+        })
+      })
+
+      this.socket.on('buzzable', (msg) => {
+        this.setState({
+          buzzable:msg.buzz,
+        })
+      })
+
+      this.socket.on('fastest_buzz', (msg) => {
+        console.log('buzzed in: ',msg.buzzedIn)
+        this.setState({
+          buzzable:false,
+          activePlayer:msg.buzzedIn,
+        })
+      })
+
+      this.socket.on('no_buzz', (msg) => {
+        console.log('no buzz')
+        const catclue = msg.screen_clicked.split("|")
+        this.board[catclue[0]][catclue[1]].answered = true
+        this.setState({
+          screenText:'',
+          activePlayer:msg.active_player,
+          buzzable:false,
+        })
+      })
+
+      this.socket.on('typed_answer', (msg) => {
+        this.setState({
+          screenInput:msg.answer_input
+        })
+      })
+
+      this.socket.on('answer_response', (msg) => {
+        if(msg.correct){
+          if(msg.position === 'one'){
+            this.players = {
+              ...this.players,
+              playerOneScore:msg.new_score,
+            }
+          } else if (msg.position === 'two') {
+            this.players = {
+              ...this.players,
+              playerOneScore:msg.new_score,
+            }
+          } else if (msg.position === 'three') {
+            this.players = {
+              ...this.players,
+              playerOneScore:msg.new_score,
+            }
+          }
+          this.setState({
+            activePlayer:msg.position,
+            
           })
         }
       })
@@ -186,28 +247,6 @@ export default class RoomList extends Component {
       })
   }
 
-  testemit = () => {
-    this.socket.emit('test', { data: 'test' })
-  }
-
-  createBoard = () => {
-    let board = []
-    for (let key in this.state.board) {
-      board.push(<ul className="boardColumn">
-        <li className="boardColumnTitle" key={key.replace(/[^A-Za-z]/g, '')}>{key}</li>
-        {this.state.board[key].map((v) =>
-          <li
-            id={key.replace(/[^A-Za-z]/g, '') + v.value}
-            key={key.replace(/[^A-Za-z]/g, '') + v.value}
-            className="boardColumnScreen"
-            onClick={this.testemit}
-            style={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?{cursor:'pointer'}:{cursor:'none'}}
-          >{v.value}</li>)}
-      </ul>)
-    }
-    return board
-  }
-
   selectPlayer = (pos) => {
     this.socket.emit('player_select', {access_token: this.props.auth.getAccessToken(), position:pos})
   }
@@ -216,12 +255,101 @@ export default class RoomList extends Component {
     this.socket.emit('player_ready', {access_token: this.props.auth.getAccessToken()})
   }
 
+  screenSelect = (e) => {
+    this.socket.emit('screen_select', { screen_clicked: e.target.id })
+  }
+
+  answerInput = (e) => {
+    this.setState({
+      screenInput:e.target.value
+    })
+    this.socket.emit('answer_typed', { answer:e.target.value })
+  }
+
+  buzzIn = () => {
+    console.log('buzz in')
+    this.setState({
+      buzzable:false,
+    })
+    this.socket.emit('buzz_in')
+  }
+
+  submitAnswer = () => {
+    this.socket.emit('answer_submit', { answer:this.state.screenInput })
+  }
+
+  testemit = (e) => {
+    this.socket.emit('test', { data: 'test' })
+  }
+
+  createBoard = () => {
+    let board = []
+    for (let key in this.board) {
+      board.push(<ul className="boardColumn">
+        <li className="boardColumnTitle" key={key.replace(/[^A-Za-z]/g, '')}>{this.board[key][0].category}</li>
+        {this.board[key].map((v, i) =>
+          <li
+            id={key.replace(/[^A-Za-z]/g, '') + '|' + i}
+            key={key.replace(/[^A-Za-z]/g, '') + ' ' + i}
+            className="boardColumnScreen"
+            onClick={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?this.screenSelect:null}
+            style={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?{cursor:'pointer'}:{cursor:'none'}}
+          >{(!v.answered)?v.value:null}</li>
+        )}
+      </ul>)
+    }
+    return board
+  }
+
   readyBox = () => {
     return(
       <div className="readyWrapper">
         <button onClick={this.readyClick} style={(this.state.ready)?{background:'white',color:'#060ce9'}:{background:'#060ce9',color:'white'}}>Ready</button>
       </div>
     );
+  }
+
+  buttonOrInput = () => {
+    if(this.state.playerNum !== 0){
+      if(this.state.activePlayer !== 0) {
+        return(
+          <>
+            <input 
+              type='text' 
+              name='answer' 
+              value={this.state.screenInput} 
+              onChange={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?this.answerInput:(e) => this.setState({screenInput:e.target.value})}
+            />
+            <button onClick={this.submitAnswer}>Submit</button>
+          </>
+        )
+      } else {
+        if(this.state.buzzable){
+          return(
+            <button onClick={this.buzzIn}>Buzz In</button>
+          )
+        } else {
+          return(
+            <div></div>
+          )
+        }
+      }
+    } else {
+      return(
+        <div>{this.state.screenInput}</div>
+      )
+    }
+  }
+
+  largeScreen = () => {
+    return(
+      <div className="largeScreenWrapper">
+        <div className="largeScreenInnerWrapper">
+          <span>{this.state.screenText}</span>
+          {this.buttonOrInput()}
+        </div>
+      </div>
+    )
   }
 
   render() {
@@ -236,7 +364,8 @@ export default class RoomList extends Component {
       return (
         <>
           <div className="boardWrapper">
-            {(this.state.started === false && this.state.playerNum !== 0)?this.readyBox():null}
+            {(this.state.started === 0 && this.state.playerNum !== 0)?this.readyBox():null}
+            {(this.state.screenText !== '')?this.largeScreen():null}
             {this.createBoard()}
           </div>
           <PlayerBar players={this.players} selectPlayer={this.selectPlayer} activePlayer={this.state.activePlayer}/>
