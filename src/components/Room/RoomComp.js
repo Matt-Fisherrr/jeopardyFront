@@ -24,6 +24,8 @@ export default class RoomList extends Component {
       screenInput:'',
       buzzable:false,
       inputAvailable:true,
+      largeScreenX:0,
+      largeScreenY:0,
     }
     this.players = {
       playerOne: "",
@@ -219,9 +221,11 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('typed_answer', (msg) => {
-        this.setState({
-          screenInput:msg.answer_input
-        })
+        if(this.numbers[this.state.activePlayer] !== this.state.playerNum){
+          this.setState({
+            screenInput:msg.answer_input
+          })
+        }
       })
 
       this.socket.on('answer_response', (msg) => {
@@ -355,7 +359,7 @@ export default class RoomList extends Component {
   readyBox = () => {
     return(
       <div className="readyWrapper">
-        <button onClick={this.readyClick} style={(this.state.ready)?{background:'white',color:'#060ce9'}:{background:'#060ce9',color:'white'}}>Ready</button>
+        <button onClick={this.readyClick} style={(this.state.ready)?{background:'#494eef', color:'white'}:null}>Ready</button>
       </div>
     );
   }
@@ -415,14 +419,14 @@ export default class RoomList extends Component {
     }
     if(this.state.loading === ''){
       return (
-        <>
+        <div className='inRoom'>
           <div className="boardWrapper">
             {(this.state.started === 0 && this.state.playerNum !== 0)?this.readyBox():null}
             {(this.state.screenText !== '')?this.largeScreen():null}
             {this.createBoard()}
           </div>
           <PlayerBar players={this.players} selectPlayer={this.selectPlayer} activePlayer={this.state.activePlayer} playerNum={this.state.playerNum} started={this.state.started} />
-        </>
+        </div>
       );
     }
   }

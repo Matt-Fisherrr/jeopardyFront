@@ -1,4 +1,4 @@
-.usernameBox {
+/* .usernameBox {
   display: flex;
   background: #060ce9;
   height: 100px;
@@ -274,4 +274,380 @@
 
 .largeScreenInnerWrapper input {
   width: 400px;
+} */
+
+.topMenu {
+  background: #8d90f5;
+  box-shadow: 0px 5px 5px #666;
+  height: 60px;
+}
+
+#dropdownWrapper {
+  font-size: 30px;
+  padding: 10px 20px;
+  width: 30px;
+}
+
+.dropdownMenu {
+  position: absolute;
+  list-style: none;
+  background: #8d90f5;
+  margin: 0;
+  box-sizing: border-box;
+  margin-top: 10px;
+  box-shadow: 5px 5px 5px #666;
+  padding: 0;
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+#dropdownWrapper:hover .dropdownMenu {
+  opacity: 1;
+}
+
+#dropdownWrapper .dropdownMenu li {
+  display: none;
+  transition-delay: 0.5s;
+  transition: all 0s;
+}
+
+#dropdownWrapper:hover .dropdownMenu li {
+  display: flex;
+}
+
+.dropdownMenu li:nth-child(1) {
+  padding: 10px;
+  border-bottom: solid black 1px;
+}
+
+.dropdownMenu li:nth-child(1) span {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.dropdownMenu li:nth-child(1) button {
+  background: transparent;
+  border: none;
+  font-size: 30px;
+  line-height: 0px;
+  transform: rotate(135deg);
+  color: black;
+  padding: 0px 0px 5px 5px;
+  transition: all 1s;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.dropdownMenu li:nth-child(2) {
+  display: flex;
+}
+
+.logOutButton {
+  background: none;
+  border: none;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+.logOutButton:hover {
+  background: #494eef;
+}
+
+.usernameBox {
+  display: flex;
+  background: #8d90f5;
+  height: 150px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  position: absolute;
+  top: calc(50vh - 75px);
+  left: calc(50vw - 185px);
+  transition: all 1s;
+  width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  font-size: 18px;
+  flex-direction: column;
+  box-shadow: 5px 5px 5px #666;
+}
+
+.usernameBox h1 {
+  flex-basis: 50%;
+  margin: 0;
+  color: white;
+  font-size: 22px;
+}
+
+#usernameInput {
+  border: solid white 2px;
+  background: transparent;
+  color: white;
+  font-size: 18px;
+  box-sizing: border-box;
+  width: 240px;
+}
+
+.usernameBox>div {
+  display: flex;
+  flex-direction: row;
+}
+
+.usernameBox>div button {
+  flex-basis: 15%;
+  background: transparent;
+  border: solid white 2px;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.5s;
+}
+
+.usernameBox>div button:hover {
+  background: #494eef
+}
+
+.notMenu {
+  max-width: 1111px;
+  margin: auto;
+  width: 90vw;
+  margin-top: 20px;
+}
+
+.roomListMenu {
+  display: flex;
+}
+
+#searchCreateInput {
+  flex-basis: 100%;
+  border: none;
+  border-top: solid #ccc 3px;
+  border-bottom: solid #ccc 3px;
+  font-size: 18px;
+  padding: 0px 10px;
+  box-sizing: border-box;
+}
+
+.refreshButton {
+  font-size: 30px;
+  background: transparent;
+  border: solid #ccc 3px;
+  border-radius: 5px 0px 0px 5px;
+  height: 45px;
+  line-height: 0px;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+.roomListMenu button:last-child {
+  flex-basis: 200px;
+  background: transparent;
+  font-size: 18px;
+  border: solid #ccc 3px;
+  border-radius: 0px 5px 5px 0px;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+.refreshButton:hover, .roomListMenu button:last-child:hover {
+  background: #ccc
+}
+
+.roomList {
+  list-style: none;
+  padding: 10px;
+}
+
+.roomList a {
+  display: flex;
+  height: 100px;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: white;
+}
+
+.roomList a h1:first-child {
+  flex-basis: 90%;
+}
+
+.roomList a h1:last-child {
+  font-size: 20px;
+  flex-basis: 10%;
+}
+
+.roomList a h1 {
+  margin: 0;
+}
+
+.roomList>li {
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px #666;
+  background: #8d90f5;
+}
+
+.inRoom {
+  max-width: 800px;
+  width: 90vw;
+  margin: 20px auto auto;
+  height: calc(100vh - 80px);
+  min-height: 500px;
+}
+
+.readyWrapper {
+  position: absolute;
+  background: white;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: calc(50vh - 100px);
+  left: calc(50vw - 100px);
+  border-radius: 10px;
+  border: solid #8d90f5 3px;
+}
+
+.readyWrapper button {
+  background: transparent;
+  color: #8d90f5;
+  font-size: 20px;
+  width: 100px;
+  height: 100px;
+  font-weight: bold;
+  border: solid #8d90f5 3px;
+  border-radius: 5px;
+  transition: all 1s;
+  cursor: pointer;
+}
+
+.readyWrapper button:hover {
+  border-color: transparent;
+}
+
+.boardWrapper {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+  height: 100%;
+  margin-bottom: 100px;
+  max-height: 700px;
+}
+
+.boardColumn {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-rows: 20% 16% 16% 16% 16% 16%;
+}
+
+.boardColumn li {
+  list-style: none;
+  margin: 5px;
+  background: #060ce9;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 10px;
+  font-weight: bolder;
+  padding: 10px;
+}
+
+.boardColumnScreen {
+  font-size: 30px;
+}
+
+.playerBarWrapper {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  flex-grow: 100;
+  position: fixed;
+  width: 90vw;
+  bottom: 0px;
+  height: 100px;
+  max-width: 800px;
+  background: #8d90f5;
+}
+
+.playerBarWrapper h1, .playerBarWrapper h2 {
+  margin: 0;
+  height: 50%;
+}
+
+.playerBarWrapper>div {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
+  height: 100px;
+  transition: all 1s;
+  color: white;
+}
+
+.playerTwo {
+  border-left: solid white 3px;
+  border-right: solid white 3px;
+}
+
+.largeScreenWrapper {
+  position: absolute;
+  background: #060ce9;
+  border-radius: 10px;
+  max-width: 800px;
+  width: 90vw;
+  height: calc( 100vh - 80px - 110px);
+  min-height: 500px;
+}
+
+.largeScreenWrapper .largeScreenInnerWrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  justify-content: start;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+}
+
+.largeScreenWrapper .largeScreenInnerWrapper span {
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+  margin: 30px 0px;
+  flex-basis: 50%;
+  display: flex;
+  align-items: end;
+}
+
+.largeScreenInnerWrapper input {
+  width: 400px;
+}
+
+.largeScreenInnerWrapper button {
+  background: transparent;
+  color: white;
+  font-size: 20px;
+  border: solid white 3px;
+  padding: 10px 30px;
+  font-weight: bold;
+  margin-top: 10px;
+  border-radius: 10px;
+  transition: all 0.5s;
+  cursor: pointer;
+}
+
+.largeScreenInnerWrapper button:hover {
+  background: #999
 }

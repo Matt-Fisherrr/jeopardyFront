@@ -91,11 +91,11 @@ export default class RoomList extends Component {
     try {
       return this.state.roomlist.map((v, i) => {
         return(
-          <li key={v+i}>
+          <li key={v+i} style={(v.old)?{background:'#494eef'}:null}>
             <Link to={"/rooms/" + v.id} key={v + i} onClick={(e) => this.setState({ room: v.id })}>{
               <>
                 <h1 className="roomListName">{v.name}</h1>
-                <h1 className="roomListPlayers">{(v.players !== 'started')?"Number of players:" + v.players + "/3":"Started"}</h1>
+                <h1 className="roomListPlayers">{(v.players !== 'started')?"Players:" + v.players + "/3":"Started"}</h1>
               </>
             }</Link>
           </li>
@@ -154,19 +154,28 @@ export default class RoomList extends Component {
       <div className="fullWrapper">
         <div className="fullInnerWrapper">
           <div className="topMenu">
-            <span>Username: {this.state.username}{(this.state.room === 0)?<button className="editButton" onClick={() => this.setState({ usernameNeeded: true })}>✏</button>:null}</span>
-            <button className="logOutButton" onClick={this.props.auth.logout} >Log Out</button>
+            <div id='dropdownWrapper'>
+              ☰
+              <ul className="dropdownMenu">
+                <li>
+                  <span>Username: {this.state.username}{(this.state.room === 0)?<button className="editButton" onClick={() => this.setState({ usernameNeeded: true })}>✏</button>:null}</span>
+                </li>
+                <li>
+                  <button className="logOutButton" onClick={this.props.auth.logout} >Log Out</button>
+                </li>
+              </ul>
+            </div>
           </div>
           <UsernameBox exitBox={this.exitBox} checkUser={this.checkUser} show={this.state.usernameNeeded} />
           {(this.state.room === 0) ?
-            <>
+            <div className="notMenu">
               <div className="roomListMenu">
-                <button className="refreshButton" onClick={this.getRoomList}>Refresh room list</button>
+                <button className="refreshButton" onClick={this.getRoomList}>↻</button>
                 <input type="text" id="searchCreateInput" placeholder="Create room" maxLength='30'/>
                 <button onClick={this.createRoom}>Create Room</button>
               </div>
               <ul className="roomList">{this.makeRoomList()}</ul>
-            </>
+            </div>
             :
             <Switch>
               <Route component={() => <RoomComp room={this.state.room} auth={this.props.auth} API_URL={this.state.API_URL} history={this.props.history}/>} />
