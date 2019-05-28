@@ -1,12 +1,12 @@
 import React from 'react';
 
-export const PlayerBar = ({players, selectPlayer, activePlayer}) => {
+export const PlayerBar = ({players, selectPlayer, activePlayer, playerNum, started}) => {
   
   return(
     <div className="playerBarWrapper">
       <div 
         className="playerOne"
-        style={(activePlayer === 1 || players.playerOneReady === true)?{background:'#ccc'}:{}}
+        style={(activePlayer === 1 || players.playerOneReady === true)?{background:'#ccc'}:(players.playerOne === '' && !started && playerNum === 0)?{cursor:'pointer'}:{}}
         onClick={() => selectPlayer("one")}
       >
         <h1>{players.playerOne}</h1>
@@ -14,7 +14,7 @@ export const PlayerBar = ({players, selectPlayer, activePlayer}) => {
       </div>
       <div 
         className="playerTwo" 
-        style={(activePlayer === 2 || players.playerTwoReady === true)?{background:'#ccc'}:{}}
+        style={(activePlayer === 2 || players.playerTwoReady === true)?{background:'#ccc'}:(players.playerTwo === '' && !started && playerNum === 0)?{cursor:'pointer'}:{}}
         onClick={() => selectPlayer("two")}
       >
         <h1>{players.playerTwo}</h1>
@@ -22,7 +22,7 @@ export const PlayerBar = ({players, selectPlayer, activePlayer}) => {
       </div>
       <div 
         className="playerThree" 
-        style={(activePlayer === 3 || players.playerThreeReady === true)?{background:'#ccc'}:{}}
+        style={(activePlayer === 3 || players.playerThreeReady === true)?{background:'#ccc'}:(players.playerThree === '' && !started && playerNum === 0)?{cursor:'pointer'}:{}}
         onClick={() => selectPlayer("three")}
       >
         <h1>{players.playerThree}</h1>

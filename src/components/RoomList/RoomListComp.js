@@ -9,7 +9,7 @@ export default class RoomList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      API_URL: 'http://localhost:5000/api',
+      API_URL: 'http://10.44.22.86:5000/api', // URL HERE -------------------------------------------------------------------
       authorized: false,
       loading: "Loading...",
       roomlist: undefined,
@@ -107,19 +107,25 @@ export default class RoomList extends Component {
   }
 
   createRoom = (e) =>{
-    console.log(e.target.parentNode.children.searchCreateInput.value)
+    this.setState({
+      loading:'Loading...'
+    })
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}` }
     const data = { roomName: e.target.parentNode.children.searchCreateInput.value }
     axios.post(`${this.state.API_URL}/roomlist/create`, data, { headers })
       .then(response => {
         this.setState({
-          room:response.data.room_id
+          room:response.data.room_id,
+          loading:'',
         })
         return <Redirect to={`/rooms/${response.data.room_id}`} />
       })
       .catch(error => {
         console.log(error)
+        this.setState({
+          loading:'Error, see console'
+        })
       })
   }
 
@@ -127,7 +133,7 @@ export default class RoomList extends Component {
     window.clearInterval(localStorage.getItem("timerKey"))
     localStorage.removeItem("timerKey")
 
-    if (this.state.loading === "Loading...") {
+    if (this.state.loading !== "") {
       return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh' }}>
           <h1>{this.state.loading}</h1>
@@ -148,7 +154,7 @@ export default class RoomList extends Component {
       <div className="fullWrapper">
         <div className="fullInnerWrapper">
           <div className="topMenu">
-            <span>Username: {this.state.username}<button className="editButton" onClick={() => this.setState({ usernameNeeded: true })}>✏</button></span>
+            <span>Username: {this.state.username}{(this.state.room === 0)?<button className="editButton" onClick={() => this.setState({ usernameNeeded: true })}>✏</button>:null}</span>
             <button className="logOutButton" onClick={this.props.auth.logout} >Log Out</button>
           </div>
           <UsernameBox exitBox={this.exitBox} checkUser={this.checkUser} show={this.state.usernameNeeded} />
@@ -156,14 +162,14 @@ export default class RoomList extends Component {
             <>
               <div className="roomListMenu">
                 <button className="refreshButton" onClick={this.getRoomList}>Refresh room list</button>
-                <input type="text" id="searchCreateInput" placeholder="Search or create room"/>
+                <input type="text" id="searchCreateInput" placeholder="Create room" maxLength='30'/>
                 <button onClick={this.createRoom}>Create Room</button>
               </div>
               <ul className="roomList">{this.makeRoomList()}</ul>
             </>
             :
             <Switch>
-              <Route component={() => <RoomComp room={this.state.room} auth={this.props.auth} API_URL={this.state.API_URL}/>} />
+              <Route component={() => <RoomComp room={this.state.room} auth={this.props.auth} API_URL={this.state.API_URL} history={this.props.history}/>} />
             </Switch>
           }
         </div>

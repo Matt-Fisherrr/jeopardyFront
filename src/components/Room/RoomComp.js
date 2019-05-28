@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Redirect } from "react-router-dom";
+// import { Redirect } from "react-router-dom";
 
 import openSocket from 'socket.io-client';
 
 import { PlayerBar } from './PlayerBarComp'
+
+var HtmlToReactParser = require('html-to-react').Parser;
 
 export default class RoomList extends Component {
   constructor(props) {
@@ -21,6 +23,7 @@ export default class RoomList extends Component {
       screenText:'',
       screenInput:'',
       buzzable:false,
+      inputAvailable:true,
     }
     this.players = {
       playerOne: "",
@@ -37,6 +40,8 @@ export default class RoomList extends Component {
     this.socket = null
 
     this.numbers = ['zero','one','two','three']
+
+    this.htmlToReactParser = new HtmlToReactParser();
   }
 
   componentDidMount() {
@@ -64,7 +69,7 @@ export default class RoomList extends Component {
   }
 
   socketSetup = () => {
-    this.socket = openSocket('http://localhost:5000/jep')
+    this.socket = openSocket('http://10.44.22.86:5000/jep') // URL HERE -------------------------------------------------------------------
 
       this.socket.on('connect', () => {
         this.socket.emit('join_room', { room_id: this.state.room, access_token: this.props.auth.getAccessToken() })
@@ -79,13 +84,21 @@ export default class RoomList extends Component {
           ...this.players,
           playerOne: msg.players.one.username,
           playerOneScore: msg.players.one.score,
-          playerOneReady:msg.players.two.ready,
+          playerOneReady:msg.players.one.ready,
           playerTwo: msg.players.two.username,
           playerTwoScore: msg.players.two.score,
           playerTwoReady:msg.players.two.ready,
           playerThree: msg.players.three.username,
           playerThreeScore: msg.players.three.score,
           playerThreeReady:msg.players.three.ready,
+        }
+        if(msg.started){
+          this.players = {
+            ...this.players,
+            playerOneReady:false,
+            playerTwoReady:false,
+            playerThreeReady:false,
+          }
         }
         this.setState({
           activePlayer:msg.active_player,
@@ -180,9 +193,11 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('buzzable', (msg) => {
-        this.setState({
-          buzzable:msg.buzz,
-        })
+        if(msg.buzzable_players.includes(this.state.playerNum)){
+          this.setState({
+            buzzable:msg.buzz,
+          })
+        }
       })
 
       this.socket.on('fastest_buzz', (msg) => {
@@ -190,6 +205,7 @@ export default class RoomList extends Component {
         this.setState({
           buzzable:false,
           activePlayer:msg.buzzedIn,
+          inputAvailable:true,
         })
       })
 
@@ -198,8 +214,6 @@ export default class RoomList extends Component {
         const catclue = msg.screen_clicked.split("|")
         this.board[catclue[0]][catclue[1]].answered = true
         this.setState({
-          screenText:'',
-          activePlayer:msg.active_player,
           buzzable:false,
         })
       })
@@ -220,19 +234,55 @@ export default class RoomList extends Component {
           } else if (msg.position === 'two') {
             this.players = {
               ...this.players,
-              playerOneScore:msg.new_score,
+              playerTwoScore:msg.new_score,
             }
           } else if (msg.position === 'three') {
             this.players = {
               ...this.players,
-              playerOneScore:msg.new_score,
+              playerThreeScore:msg.new_score,
             }
           }
           this.setState({
-            activePlayer:msg.position,
-            
+            activePlayer:this.numbers.indexOf(msg.position),
+            screenText:'',
+            screenInput:'',
+          })
+        } else {
+          if(msg.position === 'one'){
+            this.players = {
+              ...this.players,
+              playerOneScore:msg.new_score,
+            }
+          } else if (msg.position === 'two') {
+            this.players = {
+              ...this.players,
+              playerTwoScore:msg.new_score,
+            }
+          } else if (msg.position === 'three') {
+            this.players = {
+              ...this.players,
+              playerThreeScore:msg.new_score,
+            }
+          }
+          this.setState({
+            buzzable: false,
+            activePlayer: 0,
+            screenInput:'',
           })
         }
+      })
+
+      this.socket.on('no_correct_answer', (msg) => {
+        console.log(msg)
+        this.setState({
+          activePlayer:msg.position,
+          screenText:msg.answer,
+          screenInput:'',
+          inputAvailable:false,
+        })
+        window.setTimeout(() => this.setState({
+          screenText:'',
+        }), 3000)
       })
 
 
@@ -240,6 +290,7 @@ export default class RoomList extends Component {
         this.setState({
           loading:'Connection to server lost'
         })
+        window.setTimeout(() => this.props.history.replace('/'), 100)
       })
     
       this.socket.on('test', (msg) => {
@@ -293,8 +344,8 @@ export default class RoomList extends Component {
             key={key.replace(/[^A-Za-z]/g, '') + ' ' + i}
             className="boardColumnScreen"
             onClick={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?this.screenSelect:null}
-            style={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?{cursor:'pointer'}:{cursor:'none'}}
-          >{(!v.answered)?v.value:null}</li>
+            style={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?(!v.answered)?{cursor:'pointer'}:{cursor:'initial'}:{cursor:'initial'}}
+          >{(!v.answered)?<span style={{pointerEvents:'none'}}>{v.value}</span>:null}</li>
         )}
       </ul>)
     }
@@ -311,7 +362,7 @@ export default class RoomList extends Component {
 
   buttonOrInput = () => {
     if(this.state.playerNum !== 0){
-      if(this.state.activePlayer !== 0) {
+      if(this.state.activePlayer !== 0 && this.state.inputAvailable) {
         return(
           <>
             <input 
@@ -320,13 +371,13 @@ export default class RoomList extends Component {
               value={this.state.screenInput} 
               onChange={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?this.answerInput:(e) => this.setState({screenInput:e.target.value})}
             />
-            <button onClick={this.submitAnswer}>Submit</button>
+            {(this.numbers[this.state.activePlayer] === this.state.playerNum)?<button onClick={this.submitAnswer}>Submit</button>:null}
           </>
         )
       } else {
         if(this.state.buzzable){
           return(
-            <button onClick={this.buzzIn}>Buzz In</button>
+            <button onClick={this.buzzIn} className='buzzButton'>Buzz In</button>
           )
         } else {
           return(
@@ -336,16 +387,17 @@ export default class RoomList extends Component {
       }
     } else {
       return(
-        <div>{this.state.screenInput}</div>
+        <div style={{color:'white'}}>{this.state.screenInput}</div>
       )
     }
   }
 
   largeScreen = () => {
+    console.log(this.state.screenText.replace(/\\/g,''))
     return(
       <div className="largeScreenWrapper">
         <div className="largeScreenInnerWrapper">
-          <span>{this.state.screenText}</span>
+          <span>{this.htmlToReactParser.parse(this.state.screenText.replace(/\\/g,''))}</span>
           {this.buttonOrInput()}
         </div>
       </div>
@@ -353,6 +405,7 @@ export default class RoomList extends Component {
   }
 
   render() {
+    console.log(this.state, this.board)
     if (this.state.loading !== '') {
       return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
@@ -368,7 +421,7 @@ export default class RoomList extends Component {
             {(this.state.screenText !== '')?this.largeScreen():null}
             {this.createBoard()}
           </div>
-          <PlayerBar players={this.players} selectPlayer={this.selectPlayer} activePlayer={this.state.activePlayer}/>
+          <PlayerBar players={this.players} selectPlayer={this.selectPlayer} activePlayer={this.state.activePlayer} playerNum={this.state.playerNum} started={this.state.started} />
         </>
       );
     }

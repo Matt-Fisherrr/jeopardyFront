@@ -13,6 +13,33 @@
   padding: 0px;
 }
 
+.usernameBox button {
+  background: transparent;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  width: 60px;
+  border: solid white 2px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.usernameBox button:hover{
+  background:white;
+  color:#060ce9;
+}
+
+#usernameInput {
+  background: transparent;
+  color: white;
+  border: solid white 2px;
+  padding: 5px;
+  font-size: 18px;
+  height: 40px;
+  box-sizing: border-box;
+  width: 240px;
+}
+
 .fullInnerWrapper {
   width: 800px;
   height: 800px;
@@ -201,9 +228,25 @@
   height: 50%;
 }
 
+.buzzButton {
+  width: 200px;
+  height: 100px;
+  cursor: pointer;
+  background: transparent;
+  border: solid white 3px;
+  color: white;
+  font-size: 22px;
+  transition: all 0.5s
+}
+
+.buzzButton:hover {
+  background: white;
+  color: #060ce9
+}
+
 .largeScreenWrapper {
   position: absolute;
-  background: blue;
+  background: #060ce9;
   width: 740px;
   height: 588px;
   margin: 10px;
