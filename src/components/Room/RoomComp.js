@@ -50,6 +50,7 @@ export default class RoomList extends Component {
     this.htmlToReactParser = new HtmlToReactParser();
 
     this.theBoard = null
+    this.input = null
   }
 
   componentDidMount() {
@@ -74,6 +75,12 @@ export default class RoomList extends Component {
     //   this.socket.emit('disconnect', { room_id: this.state.room, access_token: this.props.auth.getAccessToken() })
     //   return null
     // }
+  }
+
+  componentDidUpdate() {
+    if(this.input){
+      this.input.focus()
+    }
   }
 
   socketSetup = () => {
@@ -426,7 +433,8 @@ export default class RoomList extends Component {
             <input 
               type='text' 
               name='answer' 
-              value={this.state.screenInput} 
+              value={this.state.screenInput}
+              ref={(ref) => this.input = ref}
               onChange={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?this.answerInput:(e) => this.setState({screenInput:e.target.value})}
             />
             {(this.numbers[this.state.activePlayer] === this.state.playerNum)?<button onClick={this.submitAnswer}>Submit</button>:null}
