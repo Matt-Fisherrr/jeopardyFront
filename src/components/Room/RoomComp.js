@@ -327,6 +327,7 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('winner', (msg) => {
+        this.socket.disconnect()
         console.log(msg.username)
         if(Array.isArray(msg.username)){
           const usernames = msg.username.join(', ')
