@@ -491,7 +491,7 @@ export default class RoomList extends Component {
       );
     }
     if(this.state.loading === ''){
-      console.log(this.theBoard)
+      // console.log(this.theBoard)
       return (
         <div className='inRoom' id='theBoard' ref={b => this.theBoard = b}>
           <div className="boardWrapper">
