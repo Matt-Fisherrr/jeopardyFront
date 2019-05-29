@@ -26,6 +26,10 @@ export default class RoomList extends Component {
       inputAvailable:true,
       largeScreenX:0,
       largeScreenY:0,
+      largeScreenWidth:0,
+      largeScreenHeight:0,
+      largeScreenTransition:'all 0s',
+      activeScreen:'',
     }
     this.players = {
       playerOne: "",
@@ -44,6 +48,8 @@ export default class RoomList extends Component {
     this.numbers = ['zero','one','two','three']
 
     this.htmlToReactParser = new HtmlToReactParser();
+
+    this.theBoard = null
   }
 
   componentDidMount() {
@@ -145,7 +151,7 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('ready_player', (msg) => {
-        console.log(msg)
+        // console.log(msg)
         if(msg.position === 'one'){
           this.players = {
             ...this.players,
@@ -188,10 +194,28 @@ export default class RoomList extends Component {
 
       this.socket.on('screen_selected', (msg) => {
         this.board[msg.category][msg.clue]['answered'] = true
+        const xAndY = msg.x_and_y.split(' ') 
         this.setState({
+          activeScreen:msg.category + "|" + msg.clue,
           screenText:msg.screen_text,
-          activePlayer:msg.active_player
+          activePlayer:msg.active_player,
+          largeScreenTransition:'all 0.5s',
+          largeScreenX:xAndY[0] + 'px',
+          largeScreenY:xAndY[1] + 'px',
         })
+        this.setState({
+          largeScreenHeight:0,
+          largeScreenWidth:0,
+          largeScreenTransition:'all 1s'
+        })
+        window.setTimeout(() => {
+          this.setState({
+            largeScreenHeight:this.theBoard.children[0].offsetHeight,
+            largeScreenWidth:this.theBoard.offsetWidth,
+            largeScreenX:this.theBoard.offsetLeft,
+            largeScreenY:this.theBoard.offsetTop,
+          })
+        }, 500)
       })
 
       this.socket.on('buzzable', (msg) => {
@@ -212,7 +236,7 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('no_buzz', (msg) => {
-        console.log('no buzz')
+        // console.log('no buzz')
         const catclue = msg.screen_clicked.split("|")
         this.board[catclue[0]][catclue[1]].answered = true
         this.setState({
@@ -226,6 +250,10 @@ export default class RoomList extends Component {
             screenInput:msg.answer_input
           })
         }
+      })
+
+      this.socket.on('take_too_long', () => {
+        this.socket.emit('answer_submit', { answer:this.state.screenInput })
       })
 
       this.socket.on('answer_response', (msg) => {
@@ -248,6 +276,7 @@ export default class RoomList extends Component {
           }
           this.setState({
             activePlayer:this.numbers.indexOf(msg.position),
+            activeScreen:'',
             screenText:'',
             screenInput:'',
           })
@@ -277,16 +306,31 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('no_correct_answer', (msg) => {
-        console.log(msg)
+        // console.log(msg)
         this.setState({
           activePlayer:msg.position,
           screenText:msg.answer,
+          activeScreen:'',
           screenInput:'',
           inputAvailable:false,
         })
         window.setTimeout(() => this.setState({
           screenText:'',
         }), 3000)
+      })
+
+      this.socket.on('winner', (msg) => {
+        console.log(msg.username)
+        if(Array.isArray(msg.username)){
+          const usernames = msg.username.join(', ')
+          this.setState({
+            loading:`Tie!\n${usernames}`
+          })
+        } else {
+          this.setState({
+            loading:`Winner!\n${msg.username}`
+          })
+        }
       })
 
 
@@ -311,7 +355,8 @@ export default class RoomList extends Component {
   }
 
   screenSelect = (e) => {
-    this.socket.emit('screen_select', { screen_clicked: e.target.id })
+    const xAndY = e.target.offsetLeft + " " + e.target.offsetTop
+    this.socket.emit('screen_select', { screen_clicked: e.target.id , x_and_y:xAndY})
   }
 
   answerInput = (e) => {
@@ -339,19 +384,28 @@ export default class RoomList extends Component {
 
   createBoard = () => {
     let board = []
+    let count1 = 0
     for (let key in this.board) {
+      let count2 = 0
       board.push(<ul className="boardColumn">
         <li className="boardColumnTitle" key={key.replace(/[^A-Za-z]/g, '')}>{this.board[key][0].category}</li>
-        {this.board[key].map((v, i) =>
-          <li
+        {
+          this.board[key].map((v, i) =>
+          { count2 += 200
+            return(<li
             id={key.replace(/[^A-Za-z]/g, '') + '|' + i}
             key={key.replace(/[^A-Za-z]/g, '') + ' ' + i}
             className="boardColumnScreen"
             onClick={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?this.screenSelect:null}
-            style={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?(!v.answered)?{cursor:'pointer'}:{cursor:'initial'}:{cursor:'initial'}}
-          >{(!v.answered)?<span style={{pointerEvents:'none'}}>{v.value}</span>:null}</li>
+            style={{
+              ...(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?(!v.answered)?{cursor:'pointer'}:{cursor:'initial'}:{cursor:'initial'},
+              ...(this.state.activeScreen === key.replace(/[^A-Za-z]/g, '') + '|' + i)?{background:'#025FA0'}:{},
+              ...{animationName: 'turn',animationDuration: '1s',animationIterationCount: 1,animationDelay:count1 + count2 + 'ms',animationFillMode:'backwards'},
+            }}
+          >{(!v.answered)?<span style={{pointerEvents:'none'}}>{v.value}</span>:null}</li>)}
         )}
       </ul>)
+      count1 += 200
     }
     return board
   }
@@ -359,7 +413,7 @@ export default class RoomList extends Component {
   readyBox = () => {
     return(
       <div className="readyWrapper">
-        <button onClick={this.readyClick} style={(this.state.ready)?{background:'#494eef', color:'white'}:null}>Ready</button>
+        <button onClick={this.readyClick} style={(this.state.ready)?{background:'#025FA0', color:'white'}:null}>Ready</button>
       </div>
     );
   }
@@ -391,17 +445,27 @@ export default class RoomList extends Component {
       }
     } else {
       return(
-        <div style={{color:'white'}}>{this.state.screenInput}</div>
+        <div style={{color:'white', fontSize:'2em'}}>{this.state.screenInput}</div>
       )
     }
   }
 
   largeScreen = () => {
-    console.log(this.state.screenText.replace(/\\/g,''))
+    // console.log(this.state.screenText.replace(/\\/g,''))
     return(
-      <div className="largeScreenWrapper">
+      <div 
+        className="largeScreenWrapper" 
+        style={{
+          top:this.state.largeScreenY,
+          left:this.state.largeScreenX,
+          width:this.state.largeScreenWidth,
+          height:this.state.largeScreenHeight,
+          transition:this.state.largeScreenTransition,
+        }}>
         <div className="largeScreenInnerWrapper">
-          <span>{this.htmlToReactParser.parse(this.state.screenText.replace(/\\/g,''))}</span>
+          <div>
+            <span>{this.htmlToReactParser.parse(this.state.screenText.replace(/\\/g,''))}</span>
+          </div>
           {this.buttonOrInput()}
         </div>
       </div>
@@ -409,17 +473,18 @@ export default class RoomList extends Component {
   }
 
   render() {
-    console.log(this.state, this.board)
+    // console.log(this.state, this.board)
     if (this.state.loading !== '') {
       return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 'calc(100vh - 60px)' }}>
           <h1>{this.state.loading}</h1>
         </div>
       );
     }
     if(this.state.loading === ''){
+      console.log(this.theBoard)
       return (
-        <div className='inRoom'>
+        <div className='inRoom' id='theBoard' ref={b => this.theBoard = b}>
           <div className="boardWrapper">
             {(this.state.started === 0 && this.state.playerNum !== 0)?this.readyBox():null}
             {(this.state.screenText !== '')?this.largeScreen():null}

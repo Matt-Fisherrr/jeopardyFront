@@ -277,7 +277,7 @@
 } */
 
 .topMenu {
-  background: #8d90f5;
+  background: #0387E5;
   box-shadow: 0px 5px 5px #666;
   height: 60px;
 }
@@ -291,10 +291,10 @@
 .dropdownMenu {
   position: absolute;
   list-style: none;
-  background: #8d90f5;
+  background: #0387E5;
   margin: 0;
   box-sizing: border-box;
-  margin-top: 10px;
+  margin-top: 9px;
   box-shadow: 5px 5px 5px #666;
   padding: 0;
   opacity: 0;
@@ -356,12 +356,12 @@
 }
 
 .logOutButton:hover {
-  background: #494eef;
+  background: #025FA0;
 }
 
 .usernameBox {
   display: flex;
-  background: #8d90f5;
+  background: #0387E5;
   height: 150px;
   box-sizing: border-box;
   border-radius: 10px;
@@ -410,7 +410,7 @@
 }
 
 .usernameBox>div button:hover {
-  background: #494eef
+  background: #025FA0
 }
 
 .notMenu {
@@ -492,7 +492,7 @@
   margin: 10px;
   border-radius: 10px;
   box-shadow: 5px 5px 5px #666;
-  background: #8d90f5;
+  background: #0387E5;
 }
 
 .inRoom {
@@ -514,17 +514,18 @@
   top: calc(50vh - 100px);
   left: calc(50vw - 100px);
   border-radius: 10px;
-  border: solid #8d90f5 3px;
+  border: solid #0387E5 3px;
+  z-index: 100;
 }
 
 .readyWrapper button {
   background: transparent;
-  color: #8d90f5;
+  color: #0387E5;
   font-size: 20px;
   width: 100px;
   height: 100px;
   font-weight: bold;
-  border: solid #8d90f5 3px;
+  border: solid #0387E5 3px;
   border-radius: 5px;
   transition: all 1s;
   cursor: pointer;
@@ -553,7 +554,7 @@
   list-style: none;
   margin: 5px;
   background: #060ce9;
-  color: white;
+  color: #ecd210;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -569,14 +570,14 @@
 
 .playerBarWrapper {
   display: grid;
-  grid-template-columns: 33% 33% 33%;
+  grid-template-columns: 33% 33% 34%;
   flex-grow: 100;
   position: fixed;
   width: 90vw;
   bottom: 0px;
   height: 100px;
   max-width: 800px;
-  background: #8d90f5;
+  background: #0387E5;
 }
 
 .playerBarWrapper h1, .playerBarWrapper h2 {
@@ -592,6 +593,7 @@
   height: 100px;
   transition: all 1s;
   color: white;
+  overflow: hidden;
 }
 
 .playerTwo {
@@ -603,10 +605,11 @@
   position: absolute;
   background: #060ce9;
   border-radius: 10px;
-  max-width: 800px;
+  overflow: hidden;
+  /* max-width: 800px;
   width: 90vw;
   height: calc( 100vh - 80px - 110px);
-  min-height: 500px;
+  min-height: 500px; */
 }
 
 .largeScreenWrapper .largeScreenInnerWrapper {
@@ -615,9 +618,11 @@
   padding: 20px;
   box-sizing: border-box;
   justify-content: start;
-  height: 100%;
-  width: 100%;
   align-items: center;
+  max-width: 800px;
+  width: 90vw;
+  height: calc( 100vh - 80px - 110px);
+  min-height: 500px;
 }
 
 .largeScreenWrapper .largeScreenInnerWrapper span {
@@ -626,9 +631,13 @@
   font-weight: bold;
   text-align: center;
   margin: 30px 0px;
-  flex-basis: 50%;
+}
+
+.largeScreenInnerWrapper div:first-child {
   display: flex;
-  align-items: end;
+  flex-basis: 60%;
+  align-items: flex-end;
+  padding: 0px 30px;
 }
 
 .largeScreenInnerWrapper input {
@@ -650,4 +659,9 @@
 
 .largeScreenInnerWrapper button:hover {
   background: #999
+}
+
+@keyframes turn {
+  from {transform: rotateY(90deg);}
+  to {transform: rotateY(0deg);}
 }

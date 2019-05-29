@@ -91,7 +91,7 @@ export default class RoomList extends Component {
     try {
       return this.state.roomlist.map((v, i) => {
         return(
-          <li key={v+i} style={(v.old)?{background:'#494eef'}:null}>
+          <li key={v+i} style={(v.old)?{background:'#025FA0'}:null}>
             <Link to={"/rooms/" + v.id} key={v + i} onClick={(e) => this.setState({ room: v.id })}>{
               <>
                 <h1 className="roomListName">{v.name}</h1>
@@ -135,7 +135,7 @@ export default class RoomList extends Component {
 
     if (this.state.loading !== "") {
       return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: 'calc(100vh - 60px)' }}>
           <h1>{this.state.loading}</h1>
         </div>
       );
@@ -144,7 +144,7 @@ export default class RoomList extends Component {
     if (this.state.roomlist === undefined && this.state.authorized === true) {
       this.getRoomList()
       return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: 'calc(100vh - 60px)' }}>
           <h1>{this.state.loading}</h1>
         </div>
       );
