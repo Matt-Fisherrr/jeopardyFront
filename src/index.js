@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { TopComp } from './TopComp';
+import TopComp from './TopComp';
+import Auth from './auth/Auth.js';
 // import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<TopComp />, document.getElementById('root'));
+const auth = new Auth()
+ReactDOM.render(<TopComp auth={auth}/>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

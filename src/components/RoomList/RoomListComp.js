@@ -29,6 +29,7 @@ export default class RoomList extends Component {
     const { getAccessToken, getIdToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}` }
     const data = { IDToken: getIdToken() }
+    // console.log("Connect")
     axios.post(`${this.state.API_URL}/connect`, data, { headers })
       .then(response => {
         if (response.data.response === true) {
@@ -47,8 +48,8 @@ export default class RoomList extends Component {
         }
       })
       .catch(error => {
-        console.log(error)
-        window.setTimeout(() => this.props.history.replace('/'), 100)
+        console.log("connect: ",error)
+        // window.setTimeout(() => this.props.history.replace('/'), 100)
         this.setState({ loading: "Error, redirecting..." })
       })
   }

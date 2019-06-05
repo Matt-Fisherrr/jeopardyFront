@@ -5,6 +5,8 @@ import axios from 'axios';
 import openSocket from 'socket.io-client';
 
 import { PlayerBar } from './PlayerBarComp'
+import { BoardComp } from './BoardComp'
+import { LargeScreenComp } from './LargeScreenComp'
 
 var HtmlToReactParser = require('html-to-react').Parser;
 
@@ -390,33 +392,7 @@ export default class RoomList extends Component {
     this.socket.emit('test', { data: 'test' })
   }
 
-  createBoard = () => {
-    let board = []
-    let count1 = 0
-    for (let key in this.board) {
-      let count2 = 0
-      board.push(<ul className="boardColumn">
-        <li className="boardColumnTitle" key={key.replace(/[^A-Za-z]/g, '')}>{this.board[key][0].category}</li>
-        {
-          this.board[key].map((v, i) =>
-          { count2 += 200
-            return(<li
-            id={key.replace(/[^A-Za-z]/g, '') + '|' + i}
-            key={key.replace(/[^A-Za-z]/g, '') + ' ' + i}
-            className="boardColumnScreen"
-            onClick={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?this.screenSelect:null}
-            style={{
-              ...(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?(!v.answered)?{cursor:'pointer'}:{cursor:'initial'}:{cursor:'initial'},
-              ...(this.state.activeScreen === key.replace(/[^A-Za-z]/g, '') + '|' + i)?{background:'#025FA0'}:{},
-              ...{animationName: 'turn',animationDuration: '1s',animationIterationCount: 1,animationDelay:count1 + count2 + 'ms',animationFillMode:'backwards'},
-            }}
-          >{(!v.answered)?<span style={{pointerEvents:'none'}}>{v.value}</span>:null}</li>)}
-        )}
-      </ul>)
-      count1 += 200
-    }
-    return board
-  }
+
 
   readyBox = () => {
     return(
@@ -424,61 +400,6 @@ export default class RoomList extends Component {
         <button onClick={this.readyClick} style={(this.state.ready)?{background:'#025FA0', color:'white'}:null}>Ready</button>
       </div>
     );
-  }
-
-  buttonOrInput = () => {
-    if(this.state.playerNum !== 0){
-      if(this.state.activePlayer !== 0 && this.state.inputAvailable) {
-        return(
-          <>
-            <input 
-              type='text' 
-              name='answer' 
-              value={this.state.screenInput}
-              ref={(ref) => this.input = ref}
-              onChange={(this.state.activePlayer === this.numbers.indexOf(this.state.playerNum))?this.answerInput:(e) => this.setState({screenInput:e.target.value})}
-            />
-            {(this.numbers[this.state.activePlayer] === this.state.playerNum)?<button onClick={this.submitAnswer}>Submit</button>:null}
-          </>
-        )
-      } else {
-        if(this.state.buzzable){
-          return(
-            <button onClick={this.buzzIn} className='buzzButton'>Buzz In</button>
-          )
-        } else {
-          return(
-            <div></div>
-          )
-        }
-      }
-    } else {
-      return(
-        <div style={{color:'white', fontSize:'2em'}}>{this.state.screenInput}</div>
-      )
-    }
-  }
-
-  largeScreen = () => {
-    // console.log(this.state.screenText.replace(/\\/g,''))
-    return(
-      <div 
-        className="largeScreenWrapper" 
-        style={{
-          top:this.state.largeScreenY,
-          left:this.state.largeScreenX,
-          width:this.state.largeScreenWidth,
-          height:this.state.largeScreenHeight,
-          transition:this.state.largeScreenTransition,
-        }}>
-        <div className="largeScreenInnerWrapper">
-          <div>
-            <span>{this.htmlToReactParser.parse(this.state.screenText.replace(/\\/g,''))}</span>
-          </div>
-          {this.buttonOrInput()}
-        </div>
-      </div>
-    )
   }
 
   render() {
@@ -496,8 +417,8 @@ export default class RoomList extends Component {
         <div className='inRoom' id='theBoard' ref={b => this.theBoard = b}>
           <div className="boardWrapper">
             {(this.state.started === 0 && this.state.playerNum !== 0)?this.readyBox():null}
-            {(this.state.screenText !== '')?this.largeScreen():null}
-            {this.createBoard()}
+            {(this.state.screenText !== '')?<LargeScreenComp />:null}
+            <BoardComp board={this.board} activePlayer={this.state.activePlayer} activeScreen={this.state.activeScreen}/>
           </div>
           <PlayerBar players={this.players} selectPlayer={this.selectPlayer} activePlayer={this.state.activePlayer} playerNum={this.state.playerNum} started={this.state.started} />
         </div>

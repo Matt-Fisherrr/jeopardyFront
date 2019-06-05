@@ -3,18 +3,22 @@ import history from '../history';
 
 export default class Auth {
 
-  auth0 = new auth0.WebAuth({
-    domain: 'dev-0fw6q03t.auth0.com',
-    clientID: '3eCEPx9I6Wr0N3FIJAwXXi5caFdRfZzV',
-    redirectUri: 'http://10.44.22.86:5000/callback', // URL HERE -------------------------------------------------------------------
-    responseType: 'token id_token',
-    scope: 'openid',
-    audience: 'localhost',
-  });
-
-  accessToken;
-  idToken;
-  expiresAt;
+  constructor() {
+    this.accessToken = null;
+    this.idToken = null;
+    this.expiresAt = null;
+    this.tokenRenewalTimeout = null;
+    this.auth0 = new auth0.WebAuth({
+      domain: 'dev-0fw6q03t.auth0.com',
+      clientID: '3eCEPx9I6Wr0N3FIJAwXXi5caFdRfZzV',
+      redirectUri: 'http://' + document.domain + ':' + window.location.port + '/callback', // URL HERE -------------------------------------------------------------------
+      responseType: 'token id_token',
+      scope: 'openid',
+      audience: 'localhost',
+    })
+    // this.renewSession()
+    this.scheduleRenewal();
+  }
 
   login = () => {
     this.auth0.authorize();
@@ -51,20 +55,14 @@ export default class Auth {
     this.idToken = authResult.idToken;
     this.expiresAt = expiresAt;
 
+    this.scheduleRenewal();
+
     // navigate to the home route
     history.replace('/rooms');
   }
 
-  renewSession = () => {
-    this.auth0.checkSession({}, (err, authResult) => {
-       if (authResult && authResult.accessToken && authResult.idToken) {
-         this.setSession(authResult);
-       } else if (err) {
-         this.logout();
-         console.log(err);
-        //  alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
-       }
-    });
+  renewSession = (callback) => {
+    this.auth0.checkSession({}, callback);
   }
 
   logout = () => {
@@ -75,6 +73,8 @@ export default class Auth {
 
     // Remove isLoggedIn flag from localStorage
     localStorage.removeItem('isLoggedIn');
+
+    clearTimeout(this.tokenRenewalTimeout);
 
     this.auth0.logout({
       returnTo: window.location.origin
@@ -90,5 +90,19 @@ export default class Auth {
     // access token's expiry time
     let expiresAt = this.expiresAt;
     return new Date().getTime() < expiresAt;
+  }
+
+  scheduleRenewal() {
+    let expiresAt = this.expiresAt;
+    const timeout = expiresAt - Date.now();
+    if (timeout > 0) {
+      this.tokenRenewalTimeout = setTimeout(() => {
+        this.renewSession();
+      }, timeout);
+    }
+  }
+
+  getExpiryDate() {
+    return JSON.stringify(new Date(this.expiresAt));
   }
 }

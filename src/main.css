@@ -617,7 +617,7 @@
   flex-direction: column;
   padding: 20px;
   box-sizing: border-box;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   max-width: 800px;
   width: 90vw;
