@@ -1,6 +1,7 @@
 import React from 'react';
 
 export const ScreenComp = (v, i) => {
+  console.log(this)
   this.count2 += 200
   return (<li
     id={this.key.replace(/[^A-Za-z]/g, '') + '|' + i}
