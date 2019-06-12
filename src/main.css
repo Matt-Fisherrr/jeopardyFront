@@ -564,6 +564,10 @@
   padding: 10px;
 }
 
+.boardColumnTitle {
+  text-transform: capitalize;
+}
+
 .boardColumnScreen {
   font-size: 30px;
 }

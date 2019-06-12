@@ -232,7 +232,7 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('buzzable', (msg) => {
-        console.log(msg,this.state.playerNum)
+        // console.log(msg,this.state.playerNum)
         if(msg.buzzable_players.includes(this.state.playerNum)){
           this.setState({
             buzzable:msg.buzz,
@@ -241,7 +241,7 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('fastest_buzz', (msg) => {
-        console.log('buzzed in: ',msg.buzzedIn)
+        // console.log('buzzed in: ',msg.buzzedIn)
         this.setState({
           buzzable:false,
           activePlayer:msg.buzzedIn,
@@ -272,18 +272,19 @@ export default class RoomList extends Component {
       })
 
       this.socket.on('answer_response', (msg) => {
+        console.log(msg)
         if(msg.correct){
-          if(msg.position === 'one'){
+          if(msg.position === 1){
             this.players = {
               ...this.players,
               playerOneScore:msg.new_score,
             }
-          } else if (msg.position === 'two') {
+          } else if (msg.position === 2) {
             this.players = {
               ...this.players,
               playerTwoScore:msg.new_score,
             }
-          } else if (msg.position === 'three') {
+          } else if (msg.position === 3) {
             this.players = {
               ...this.players,
               playerThreeScore:msg.new_score,
@@ -296,17 +297,17 @@ export default class RoomList extends Component {
             screenInput:'',
           })
         } else {
-          if(msg.position === 'one'){
+          if(msg.position === 1){
             this.players = {
               ...this.players,
               playerOneScore:msg.new_score,
             }
-          } else if (msg.position === 'two') {
+          } else if (msg.position === 2) {
             this.players = {
               ...this.players,
               playerTwoScore:msg.new_score,
             }
-          } else if (msg.position === 'three') {
+          } else if (msg.position === 3) {
             this.players = {
               ...this.players,
               playerThreeScore:msg.new_score,
@@ -384,7 +385,7 @@ export default class RoomList extends Component {
   }
 
   buzzIn = () => {
-    console.log('buzz in')
+    // console.log('buzz in')
     this.setState({
       buzzable:false,
     })
