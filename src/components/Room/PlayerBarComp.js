@@ -7,7 +7,7 @@ export const PlayerBar = ({players, selectPlayer, activePlayer, playerNum, start
       <div 
         className="playerOne"
         style={(activePlayer === 1 || players.playerOneReady === true)?{background:'#494eef'}:(players.playerOne === '' && !started && playerNum === 0)?{cursor:'pointer'}:{}}
-        onClick={() => selectPlayer("one")}
+        onClick={() => selectPlayer(1)}
       >
         <h1>{players.playerOne}</h1>
         <h2>Score: {players.playerOneScore}</h2>
@@ -15,7 +15,7 @@ export const PlayerBar = ({players, selectPlayer, activePlayer, playerNum, start
       <div 
         className="playerTwo" 
         style={(activePlayer === 2 || players.playerTwoReady === true)?{background:'#494eef'}:(players.playerTwo === '' && !started && playerNum === 0)?{cursor:'pointer'}:{}}
-        onClick={() => selectPlayer("two")}
+        onClick={() => selectPlayer(2)}
       >
         <h1>{players.playerTwo}</h1>
         <h2>Score: {players.playerTwoScore}</h2>
@@ -23,7 +23,7 @@ export const PlayerBar = ({players, selectPlayer, activePlayer, playerNum, start
       <div 
         className="playerThree" 
         style={(activePlayer === 3 || players.playerThreeReady === true)?{background:'#494eef'}:(players.playerThree === '' && !started && playerNum === 0)?{cursor:'pointer'}:{}}
-        onClick={() => selectPlayer("three")}
+        onClick={() => selectPlayer(3)}
       >
         <h1>{players.playerThree}</h1>
         <h2>Score: {players.playerThreeScore}</h2>

@@ -1,34 +1,35 @@
 import React from 'react';
 
-export const buttonOrInput = () => {
-  if(playerNum !== 0){
-    if(activePlayer !== 0 && inputAvailable) {
-      return(
+export const ButtonOrInput = ({ inputPass }) => {
+  let { playerNum, activePlayer, inputAvailable, screenInput, buzzable, buzzIn, submitAnswer, typeAnswer, answerInput, input} = inputPass
+  if (playerNum !== 0) {
+    if (activePlayer !== 0 && inputAvailable) {
+      return (
         <>
-          <input 
-            type='text' 
-            name='answer' 
+          <input
+            type='text'
+            name='answer'
             value={screenInput}
-            ref={(ref) => this.input = ref}
-            onChange={(activePlayer === this.numbers.indexOf(playerNum))?this.answerInput:(e) => this.setState({screenInput:e.target.value})}
+            ref={(ref) => input = ref}
+            onChange={(activePlayer === playerNum) ? answerInput : typeAnswer}
           />
-          {(this.numbers[activePlayer] === playerNum)?<button onClick={this.submitAnswer}>Submit</button>:null}
+          {(activePlayer === playerNum) ? <button onClick={submitAnswer}>Submit</button> : null}
         </>
       )
     } else {
-      if(buzzable){
-        return(
-          <button onClick={this.buzzIn} className='buzzButton'>Buzz In</button>
+      if (buzzable) {
+        return (
+          <button onClick={buzzIn} className='buzzButton'>Buzz In</button>
         )
       } else {
-        return(
+        return (
           <div></div>
         )
       }
     }
   } else {
-    return(
-      <div style={{color:'white', fontSize:'2em'}}>{screenInput}</div>
+    return (
+      <div style={{ color: 'white', fontSize: '2em' }}>{screenInput}</div>
     )
   }
 }

@@ -33,7 +33,7 @@ export default class TopComp extends Component {
         renew: false,
       })
     } else if (err) {
-      this.props.auth.logout();
+      this.props.auth.login()
       console.log(err);
       //  alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
     }

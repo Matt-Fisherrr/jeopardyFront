@@ -82,7 +82,7 @@ export default class Auth {
 
     // navigate to the home route
     // history.replace('/');
-    window.location = "https://dev-0fw6q03t.auth0.com/v2/logout?returnTo=http%3A%2F%2F10.44.22.86%3A5000&client_id=3eCEPx9I6Wr0N3FIJAwXXi5caFdRfZzV"
+    window.location = "https://dev-0fw6q03t.auth0.com/v2/logout?returnTo=http%3A%2F%2Flocalhost%3A3000&client_id=3eCEPx9I6Wr0N3FIJAwXXi5caFdRfZzV"
   } // URL HERE -------------------------------------------------------------------
 
   isAuthenticated = () => {
