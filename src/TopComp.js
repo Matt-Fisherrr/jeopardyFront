@@ -49,8 +49,8 @@ export default class TopComp extends Component {
     }
     return (
       <Router history={history}>
-        <Route exact path="/" render={(props) => {
-          return ((this.props.auth.isAuthenticated()) ?
+        <Route exact path="/" render={(props) => (
+          (this.props.auth.isAuthenticated()) ?
             <Redirect
               to={{
                 pathname: "/rooms",
@@ -63,8 +63,8 @@ export default class TopComp extends Component {
                 state: { from: props.location }
               }}
             />
-          );
-        }} />
+          )
+        } />
         <Route path="/login" render={() => this.props.auth.login()} />
         <Route path="/callback" render={(props) => {
           this.handleAuthentication(props);
