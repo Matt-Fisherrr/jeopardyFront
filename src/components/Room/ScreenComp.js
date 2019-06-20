@@ -4,7 +4,7 @@ export const ScreenComp = (v, i, index, args) => {
   // console.log(args)
   return (<li
     id={index + '|' + i}
-    key={args.key.replace(/[^A-Za-z]/g, '') + ' ' + i}
+    key={args.key.replace(/[^A-Za-z]/g, '') + ((i+1) * (index+1))}
     className="boardColumnScreen"
     onClick={(args.activePlayer === args.playerNum && args.activePlayer !== 0 && args.playerNum !== 0) ? args.screenSelect : null}
     style={{

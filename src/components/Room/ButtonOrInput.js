@@ -1,25 +1,24 @@
 import React from 'react';
 
-export const ButtonOrInput = ({ inputPass }) => {
-  let { playerNum, activePlayer, inputAvailable, screenInput, buzzable, buzzIn, submitAnswer, typeAnswer, answerInput, input} = inputPass
-  if (playerNum !== 0) {
-    if (activePlayer !== 0 && inputAvailable) {
+export const ButtonOrInput = ({ socket }) => {
+  if (socket.playerNum !== 0) {
+    if (socket.activePlayer !== 0 && socket.inputAvailable) {
       return (
         <>
           <input
             type='text'
             name='answer'
-            value={screenInput}
-            ref={(ref) => input = ref}
-            onChange={(activePlayer === playerNum) ? answerInput : typeAnswer}
+            value={socket.screenInput}
+            ref={(ref) => socket.input = ref}
+            onChange={(socket.activePlayer === socket.playerNum) ? socket.answerInput : socket.typeAnswer}
           />
-          {(activePlayer === playerNum) ? <button onClick={submitAnswer}>Submit</button> : null}
+          {(socket.activePlayer === socket.playerNum) ? <button onClick={socket.submitAnswer}>Submit</button> : null}
         </>
       )
     } else {
-      if (buzzable) {
+      if (socket.buzzable) {
         return (
-          <button onClick={buzzIn} className='buzzButton'>Buzz In</button>
+          <button onClick={socket.buzzIn} className='buzzButton'>Buzz In</button>
         )
       } else {
         return (
@@ -29,7 +28,7 @@ export const ButtonOrInput = ({ inputPass }) => {
     }
   } else {
     return (
-      <div style={{ color: 'white', fontSize: '2em' }}>{screenInput}</div>
+      <div style={{ color: 'white', fontSize: '2em' }}>{socket.screenInput}</div>
     )
   }
 }

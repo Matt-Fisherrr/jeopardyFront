@@ -1,32 +1,32 @@
 import React from 'react';
 
-export const PlayerBar = ({players, selectPlayer, activePlayer, playerNum, started}) => {
+export const PlayerBar = ({socket}) => {
   
   return(
     <div className="playerBarWrapper">
       <div 
         className="playerOne"
-        style={(activePlayer === 1 || players.playerOneReady === true)?{background:'#494eef'}:(players.playerOne === '' && !started && playerNum === 0)?{cursor:'pointer'}:{}}
-        onClick={() => selectPlayer(1)}
+        style={(socket.activePlayer === 1 || socket.players.playerOneReady === true)?{background:'#494eef'}:(socket.players.playerOne === '' && !socket.started && socket.playerNum === 0)?{cursor:'pointer'}:{}}
+        onClick={() => socket.selectPlayer(1)}
       >
-        <h1>{players.playerOne}</h1>
-        <h2>Score: {players.playerOneScore}</h2>
+        <h1>{socket.players.playerOne}</h1>
+        <h2>Score: {socket.players.playerOneScore}</h2>
       </div>
       <div 
         className="playerTwo" 
-        style={(activePlayer === 2 || players.playerTwoReady === true)?{background:'#494eef'}:(players.playerTwo === '' && !started && playerNum === 0)?{cursor:'pointer'}:{}}
-        onClick={() => selectPlayer(2)}
+        style={(socket.activePlayer === 2 || socket.players.playerTwoReady === true)?{background:'#494eef'}:(socket.players.playerTwo === '' && !socket.started && socket.playerNum === 0)?{cursor:'pointer'}:{}}
+        onClick={() => socket.selectPlayer(2)}
       >
-        <h1>{players.playerTwo}</h1>
-        <h2>Score: {players.playerTwoScore}</h2>
+        <h1>{socket.players.playerTwo}</h1>
+        <h2>Score: {socket.players.playerTwoScore}</h2>
       </div>
       <div 
         className="playerThree" 
-        style={(activePlayer === 3 || players.playerThreeReady === true)?{background:'#494eef'}:(players.playerThree === '' && !started && playerNum === 0)?{cursor:'pointer'}:{}}
-        onClick={() => selectPlayer(3)}
+        style={(socket.activePlayer === 3 || socket.players.playerThreeReady === true)?{background:'#494eef'}:(socket.players.playerThree === '' && !socket.started && socket.playerNum === 0)?{cursor:'pointer'}:{}}
+        onClick={() => socket.selectPlayer(3)}
       >
-        <h1>{players.playerThree}</h1>
-        <h2>Score: {players.playerThreeScore}</h2>
+        <h1>{socket.players.playerThree}</h1>
+        <h2>Score: {socket.players.playerThreeScore}</h2>
       </div>
     </div>
   )
