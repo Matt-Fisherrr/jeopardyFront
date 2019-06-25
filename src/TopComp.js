@@ -27,7 +27,7 @@ export default class TopComp extends Component {
 
   renewCallback = (err, authResult) => {
     if (authResult && authResult.accessToken && authResult.idToken) {
-      console.log("authresult", authResult)
+      // console.log("authresult", authResult)
       this.props.auth.setSession(authResult);
       this.setState({
         renew: false,
