@@ -5,6 +5,6 @@ export const RoomListMenuComp = ({auth, stateSetter}) => (
     <div className="roomListMenu">
         <button className="refreshButton" onClick={() => getRoomList(auth, stateSetter)}>↻</button>
         <input type="text" id="searchCreateInput" placeholder="Create room" maxLength='30' />
-        <button onClick={e => createRoom(e, auth, stateSetter)}>Create Room</button>
+        <button onClick={e => createRoom(e, stateSetter, auth)}>Create Room</button>
     </div>
 )

@@ -293,8 +293,7 @@ export default class socketController {
         })
 
         this.socket.on('winner', (msg) => {
-            this.socket.disconnect()
-            // console.log(msg.username)
+            console.log(msg.username)
             if (Array.isArray(msg.username)) {
                 const usernames = msg.username.join(', ')
                 this.stateSetter({
@@ -305,6 +304,7 @@ export default class socketController {
                     loading: `Winner!\n${msg.username}`
                 })
             }
+            this.socket.disconnect()
         })
 
         this.socket.on('error', () => {

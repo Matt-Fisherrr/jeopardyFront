@@ -22,12 +22,12 @@ export const getBoard = async (stateSetter, auth, room) => {
     return res
 }
 
-export const connect = (stateSetter, auth, history) => {
+export const connect = async (stateSetter, auth, history) => {
     const { getAccessToken, getIdToken } = auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}` }
     const data = { IDToken: getIdToken() }
     // console.log("Connect")
-    axios.post(`${API_URL}/connect`, data, { headers })
+    await axios.post(`${API_URL}/connect`, data, { headers })
         .then(response => {
             if (response.data.response === true) {
                 stateSetter({
@@ -46,7 +46,7 @@ export const connect = (stateSetter, auth, history) => {
         })
         .catch(error => {
             console.log("connect: ", error)
-            window.setTimeout(() => history.replace('/'), 100)
+            // window.setTimeout(() => history.replace('/'), 100)
             stateSetter({ loading: "Error, redirecting..." })
         })
 }
@@ -64,7 +64,7 @@ export const checkUser = (username, auth, exitBox, stateSetter, history) => {
         })
         .catch(error => {
             console.log(error)
-            window.setTimeout(() => history.replace('/'), 100)
+            // window.setTimeout(() => history.replace('/'), 100)
             stateSetter({ loading: "Error, redirecting..." })
         })
 }
