@@ -11,7 +11,7 @@ export default class Auth {
     this.auth0 = new auth0.WebAuth({
       domain: 'dev-0fw6q03t.auth0.com',
       clientID: '3eCEPx9I6Wr0N3FIJAwXXi5caFdRfZzV',
-      redirectUri: 'https://jeopardyfrontend.herokuapp.com/callback', // URL HERE -------------------------------------------------------------------
+      redirectUri: 'https%3A%2F%2Fjeopardyfrontend.herokuapp.com%2Fcallback', // URL HERE -------------------------------------------------------------------
       responseType: 'token id_token',
       scope: 'openid',
       audience: 'localhost',
