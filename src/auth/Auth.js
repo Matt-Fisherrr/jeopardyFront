@@ -62,6 +62,7 @@ export default class Auth {
   }
 
   renewSession = (callback) => {
+    console.log('RenewSession')
     this.auth0.checkSession({}, callback);
   }
 
