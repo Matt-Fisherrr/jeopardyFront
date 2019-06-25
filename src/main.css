@@ -375,6 +375,7 @@
   font-size: 18px;
   flex-direction: column;
   box-shadow: 5px 5px 5px #666;
+  z-index: 2;
 }
 
 .usernameBox h1 {
@@ -411,6 +412,16 @@
 
 .usernameBox>div button:hover {
   background: #025FA0
+}
+
+.usernameBackground {
+  z-index: 1;
+  background: #0004;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
 
 .notMenu {

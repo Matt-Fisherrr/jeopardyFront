@@ -13,7 +13,7 @@ export default class Auth {
     this.auth0 = new auth0.WebAuth({
       domain: 'dev-0fw6q03t.auth0.com',
       clientID: '3eCEPx9I6Wr0N3FIJAwXXi5caFdRfZzV',
-      redirectUri: 'http://' + this.url + '/callback', // URL HERE -------------------------------------------------------------------
+      redirectUri: 'http://' + this.url + '/callback',
       responseType: 'token id_token',
       scope: 'openid',
       audience: 'localhost',
@@ -86,7 +86,7 @@ export default class Auth {
     // navigate to the home route
     // history.replace('/');
     window.location = "https://dev-0fw6q03t.auth0.com/v2/logout?returnTo=http%3A%2F%2F" + this.encodedurl + "&client_id=3eCEPx9I6Wr0N3FIJAwXXi5caFdRfZzV"
-  } // URL HERE -------------------------------------------------------------------
+  }
 
   isAuthenticated = () => {
     // Check whether the current time is past the
