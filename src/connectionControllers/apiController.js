@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
 
-const API_URL = 'http://jeopardybackend.herokuapp.com/api'
+const API_URL = 'https://jeopardybackend.herokuapp.com/api'
 
 export const getBoard = async (stateSetter, auth, room) => {
     const { getAccessToken } = auth;

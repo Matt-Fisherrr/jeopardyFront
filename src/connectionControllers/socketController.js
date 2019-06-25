@@ -2,7 +2,7 @@ import openSocket from 'socket.io-client';
 
 export default class socketController {
     constructor(auth, room, board, history, stateSetter) {
-        this.socket = openSocket('http://jeopardybackend.herokuapp.com/jep')
+        this.socket = openSocket('https://jeopardybackend.herokuapp.com/jep')
         this.setupEventResponses()
 
         this.stateSetter = stateSetter
