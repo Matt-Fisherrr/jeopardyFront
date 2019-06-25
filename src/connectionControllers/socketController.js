@@ -2,7 +2,7 @@ import openSocket from 'socket.io-client';
 
 export default class socketController {
     constructor(auth, room, board, history, stateSetter) {
-        this.socket = openSocket('http://10.44.22.86:5000/jep')
+        this.socket = openSocket('http://jeopardybackend.herokuapp.com/jep')
         this.setupEventResponses()
 
         this.stateSetter = stateSetter
@@ -330,7 +330,7 @@ export default class socketController {
     }
 
     answerInput = (e) => {
-        console.log(e.target,this.screenInput)
+        // console.log(e.target,this.screenInput)
         this.screenInput = e.target.value
         this.socket.emit('answer_typed', { answer: e.target.value })
         this.stateSetter()
