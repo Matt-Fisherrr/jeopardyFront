@@ -2,8 +2,8 @@ import openSocket from 'socket.io-client';
 
 export default class socketController {
     constructor(auth, room, board, history, stateSetter) {
-        // this.socket = openSocket('https://jeopardybackend.herokuapp.com/jep')
-        this.socket = openSocket('http://localhost:5000/jep')
+        this.socket = openSocket('https://jeopardybackend.herokuapp.com/jep')
+        // this.socket = openSocket('http://localhost:5000/jep')
 
         this.setupEventResponses()
 
