@@ -47,7 +47,7 @@ export default class RoomList extends Component {
     }
 
     if (this.state.roomlist === undefined && this.state.authorized === true) {
-      getRoomList(this.props.auth, this.stateSetter)
+      getRoomList(this.props.auth, this.stateSetter, this.props.history)
       return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: 'calc(100vh - 60px)' }}>
           <h1>{this.state.loading}</h1>
@@ -62,7 +62,7 @@ export default class RoomList extends Component {
           <UsernameBox exitBox={this.exitBox} show={this.state.usernameNeeded} auth={this.props.auth} stateSetter={this.stateSetter} history={this.props.history} />
           {(this.state.room === 0) ?
             <div className="notMenu">
-              <RoomListMenuComp auth={this.props.auth} stateSetter={this.stateSetter} />
+              <RoomListMenuComp auth={this.props.auth} stateSetter={this.stateSetter} history={this.props.history} />
               <ul className="roomList">
                 <MakeRoomList roomlist={this.state.roomlist} stateSetter={this.stateSetter} />
               </ul>

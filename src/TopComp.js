@@ -16,7 +16,13 @@ export default class TopComp extends Component {
   }
 
   componentDidMount() {
-    this.props.auth.renewSession(this.renewCallback)
+    if (document.cookie === "") {
+      this.props.auth.renewSession(this.renewCallback)
+    } else {
+      this.setState({
+        renew: false,
+      })
+    }
   }
 
   handleAuthentication = (nextState, replace) => {
@@ -27,7 +33,7 @@ export default class TopComp extends Component {
 
   renewCallback = (err, authResult) => {
     if (authResult && authResult.accessToken && authResult.idToken) {
-      // console.log("authresult", authResult)
+      console.log("authresult", authResult)
       this.props.auth.setSession(authResult);
       this.setState({
         renew: false,
@@ -63,14 +69,14 @@ export default class TopComp extends Component {
                 state: { from: props.location }
               }}
             />
-          )
+        )
         } />
         <Route path="/login" render={() => this.props.auth.login()} />
         <Route path="/callback" render={(props) => {
           this.handleAuthentication(props);
           return <Callback history={history} />
         }} />
-        <Route path="/rooms" render={() => (this.props.auth.isAuthenticated())?<RoomList auth={this.props.auth} history={history} />:<Redirect to={{ pathname: "/login",}}/>} />
+        <Route path="/rooms" render={() => (this.props.auth.isAuthenticated()) ? <RoomList auth={this.props.auth} history={history} /> : <Redirect to={{ pathname: "/login", }} />} />
         <Route path="/logout" render={() => this.props.auth.logout()} />
       </Router>
     );

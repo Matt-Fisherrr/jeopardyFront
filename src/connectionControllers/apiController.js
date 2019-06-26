@@ -2,7 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
 
-const API_URL = 'https://jeopardybackend.herokuapp.com/api'
+// const API_URL = 'https://jeopardybackend.herokuapp.com/api'
+const API_URL = 'http://localhost:5000/api'
 
 export const getBoard = async (stateSetter, auth, room) => {
     const { getAccessToken } = auth;
@@ -46,7 +47,7 @@ export const connect = async (stateSetter, auth, history) => {
         })
         .catch(error => {
             console.log("connect: ", error)
-            // window.setTimeout(() => history.replace('/'), 100)
+            window.setTimeout(() => history.replace('/'), 1000)
             stateSetter({ loading: "Error, redirecting..." })
         })
 }
@@ -64,12 +65,12 @@ export const checkUser = (username, auth, exitBox, stateSetter, history) => {
         })
         .catch(error => {
             console.log(error)
-            // window.setTimeout(() => history.replace('/'), 100)
+            window.setTimeout(() => history.replace('/'), 1000)
             stateSetter({ loading: "Error, redirecting..." })
         })
 }
 
-export const getRoomList = (auth, stateSetter) => {
+export const getRoomList = (auth, stateSetter, history) => {
     const { getAccessToken } = auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}` }
     axios.get(`${API_URL}/roomlist`, { headers })
@@ -78,6 +79,7 @@ export const getRoomList = (auth, stateSetter) => {
         })
         .catch(error => {
             console.log(error)
+            window.setTimeout(() => history.replace('/'), 1000)
         })
 }
 
