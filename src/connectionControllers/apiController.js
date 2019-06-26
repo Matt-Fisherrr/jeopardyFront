@@ -80,6 +80,7 @@ export const getRoomList = (auth, stateSetter, history) => {
         .catch(error => {
             console.log(error)
             window.setTimeout(() => history.replace('/'), 1000)
+            stateSetter({ loading: "Error, redirecting..." })
         })
 }
 
