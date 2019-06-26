@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 const API_URL = 'https://jeopardybackend.herokuapp.com/api'
 // const API_URL = 'http://localhost:5000/api'
 
-export const getBoard = async (stateSetter, auth, room) => {
+export const getBoard = async (stateSetter, auth, room, history) => {
     const { getAccessToken } = auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`, 'room_id': room }
     let res = ''
@@ -14,11 +14,9 @@ export const getBoard = async (stateSetter, auth, room) => {
             res = response.data.board
         })
         .catch(error => {
-            res = error
-            console.log(error)
-            stateSetter({
-                loading: 'Error, see console'
-            })
+            console.log("getBoard: ", error)
+            stateSetter({ loading: "Error, redirecting..." })
+            window.setTimeout(() => history.replace('/'), 1000)
         })
     return res
 }
@@ -64,7 +62,7 @@ export const checkUser = (username, auth, exitBox, stateSetter, history) => {
             })
         })
         .catch(error => {
-            console.log(error)
+            console.log("checkUser: ",error)
             window.setTimeout(() => history.replace('/'), 1000)
             stateSetter({ loading: "Error, redirecting..." })
         })
@@ -78,7 +76,7 @@ export const getRoomList = (auth, stateSetter, history) => {
             stateSetter({ roomlist: response.data })
         })
         .catch(error => {
-            console.log(error)
+            console.log("getRoomList: ", error)
             window.setTimeout(() => history.replace('/'), 1000)
             stateSetter({ loading: "Error, redirecting..." })
         })
@@ -100,7 +98,7 @@ export const createRoom = (e, stateSetter, auth) => {
         return <Redirect to={`/rooms/${response.data.room_id}`} />
       })
       .catch(error => {
-        console.log(error)
+        console.log("createRoom: ", error)
         stateSetter({
           loading: 'Error, see console'
         })

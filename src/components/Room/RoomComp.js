@@ -29,7 +29,7 @@ export default class RoomList extends Component {
   }
 
   async componentDidMount() {
-    this.board = await getBoard(this.stateSetter, this.props.auth, this.props.room)
+    this.board = await getBoard(this.stateSetter, this.props.auth, this.props.room, this.props.history)
     await this.setState({
       loading: '',
       socket: new socketController(this.props.auth, this.state.room, this.board, this.props.history, this.stateSetter)
