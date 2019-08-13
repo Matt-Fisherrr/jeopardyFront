@@ -510,7 +510,6 @@
   max-width: 800px;
   width: 90vw;
   margin: 20px auto auto;
-  min-height: 500px;
   display: flex;
   flex-direction: column;
 }
@@ -572,6 +571,7 @@
   border-radius: 10px;
   font-weight: bolder;
   padding: 10px;
+  overflow: hidden;
 }
 
 .boardColumnTitle {
@@ -585,7 +585,6 @@
 .playerBarWrapper {
   display: grid;
   grid-template-columns: 33% 33% 34%;
-  flex-grow: 100;
   width: 90vw;
   bottom: 0px;
   height: 100px;
@@ -671,16 +670,30 @@
 }
 
 .largeScreenInnerWrapper button:hover {
-  background: #999
+  background: #999;
 }
 
-@media only screen and (max-width: 1000px){
-  .largeScreenWrapper, .largeScreenWrapper .largeScreenInnerWrapper{
+@media only screen and (max-width: 500px) {
+  .inRoom .boardColumnTitle {
+    font-size: 12px;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .largeScreenWrapper, .largeScreenWrapper .largeScreenInnerWrapper {
     width: 100vw !important;
     height: 100vh !important;
     top: 0px !important;
     left: 0px !important;
     min-height: 0px !important;
     position: fixed;
+  }
+  .boardColumnTitle:hover, .boardColumnTitle:focus, .boardColumnTitle:active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    font-size: 30px;
   }
 }
