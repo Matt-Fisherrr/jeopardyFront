@@ -510,8 +510,9 @@
   max-width: 800px;
   width: 90vw;
   margin: 20px auto auto;
-  height: calc(100vh - 80px);
   min-height: 500px;
+  display: flex;
+  flex-direction: column;
 }
 
 .readyWrapper {
@@ -549,9 +550,7 @@
 .boardWrapper {
   display: grid;
   grid-template-columns: 20% 20% 20% 20% 20%;
-  height: 100%;
-  margin-bottom: 100px;
-  max-height: 700px;
+  min-height: 80vmin;
 }
 
 .boardColumn {
@@ -587,7 +586,6 @@
   display: grid;
   grid-template-columns: 33% 33% 34%;
   flex-grow: 100;
-  position: fixed;
   width: 90vw;
   bottom: 0px;
   height: 100px;
@@ -676,7 +674,13 @@
   background: #999
 }
 
-@keyframes turn {
-  from {transform: rotateY(90deg);}
-  to {transform: rotateY(0deg);}
+@media only screen and (max-width: 1000px){
+  .largeScreenWrapper, .largeScreenWrapper .largeScreenInnerWrapper{
+    width: 100vw !important;
+    height: 100vh !important;
+    top: 0px !important;
+    left: 0px !important;
+    min-height: 0px !important;
+    position: fixed;
+  }
 }

@@ -8,12 +8,12 @@ export default class Auth {
     this.idToken = null;
     this.expiresAt = null;
     this.tokenRenewalTimeout = null;
-    this.url = (window.location.hostname === "localhost")?"localhost:3000":window.location.hostname;
-    this.encodedurl = (window.location.hostname === "localhost")?"localhost%3A3000":window.location.hostname;
+    this.url = (window.location.hostname === "localhost")?"http://localhost:3000":'https://' + window.location.hostname;
+    this.encodedurl = (window.location.hostname === "localhost")?"http%3A%2F%2Flocalhost%3A3000":"https%3A%2F%2F" + window.location.hostname;
     this.auth0 = new auth0.WebAuth({
       domain: 'dev-0fw6q03t.auth0.com',
       clientID: '3eCEPx9I6Wr0N3FIJAwXXi5caFdRfZzV',
-      redirectUri: 'https://' + this.url + '/callback',
+      redirectUri: this.url + '/callback',
       responseType: 'token id_token',
       scope: 'openid',
       audience: 'localhost',
